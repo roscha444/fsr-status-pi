@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import FakeRPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 import logging
 import api
