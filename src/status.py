@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 import FakeRPi.GPIO as GPIO
 import time
 import logging
@@ -9,16 +8,24 @@ import util
 LAST_MOVEMENT=0
 LAST_API_CALL=0
 
+def eventRegistered(channel):
+    if(util.timestampIsOlderThanOneMinute):
+        global LAST_API_CALL
+        LAST_API_CALL=util.getCurrentTime()
+        api.setStatusOpen()
+    global LAST_MOVEMENT
+    LAST_MOVEMENT=util.getCurrentTime()
+
 def main():
-    load_dotenv()
+    SENSOR_PIN=os.environ.get("SENSOR_PIN")
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(os.environ.get("SENSOR_PIN"), GPIO.IN)
+    GPIO.setup(SENSOR_PIN, GPIO.IN)
  
     try:
-        logging.info('register callback for pin: %s', os.environ.get("SENSOR_PIN"))
-        
-        GPIO.add_event_detect(os.environ.get("SENSOR_PIN") , GPIO.RISING, callback=eventRegistered)
-        
+        logging.info('Register callback for pin: %s', SENSOR_PIN)
+
+        GPIO.add_event_detect(SENSOR_PIN, GPIO.RISING, callback=eventRegistered)
+
         while True:
             time.sleep(60 * 2)
 
@@ -31,11 +38,3 @@ def main():
         logging.info("Close Application...!")
 
     GPIO.cleanup()
-
-def eventRegistered(channel):
-    if(util.timestampIsOlderThanOneMinute):
-        global LAST_API_CALL
-        LAST_API_CALL=util.getCurrentTime()
-        api.setStatusOpen()
-    global LAST_MOVEMENT
-    LAST_MOVEMENT=util.getCurrentTime()

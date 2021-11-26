@@ -8,13 +8,13 @@ def getStatus():
     logging.info('GET status')
     return response.json()["open"]
 
-def setStatusOpen():    
+def setStatusOpen():
     statusOpenUrl = os.environ.get("API_URL") + "/api/v1/status/open"
-    response = requests.put(statusOpenUrl)
+    response = requests.put(statusOpenUrl, json={"apiSecret": os.environ.get("API_SECRET")})
     logging.info('PUT status open')
     return response.json()["success"]
 
-def setStatusClose():    
+def setStatusClose():
     statusOpenUrl = os.environ.get("API_URL") + "/api/v1/status/close"
     response = requests.put(statusOpenUrl, json={"apiSecret": os.environ.get("API_SECRET")})
     logging.info('PUT status closed')
