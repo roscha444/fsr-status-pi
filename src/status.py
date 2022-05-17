@@ -14,12 +14,14 @@ YELLOW_PIN=0
 GREEN_PIN=0
 
 def eventRegistered(channel):
+    logging.debug("New Callback")
     api.setStatusOpen()
     GPIO.output(GREEN_PIN,GPIO.HIGH)
     GPIO.output(RED_PIN, GPIO.LOW)
     GPIO.output(YELLOW_PIN, GPIO.LOW)
     global LAST_MOVEMENT
     LAST_MOVEMENT=util.getCurrentTime()
+    logging.debug("Callback finished")
 
 def main():
     global SENSOR_PIN
@@ -45,11 +47,12 @@ def main():
         GPIO.add_event_detect(SENSOR_PIN, GPIO.RISING, callback=eventRegistered)
 
         while True:
+            logging.debug("Sleep 60 seconds")
             time.sleep(60)
 
             global LAST_MOVEMENT
             if(util.timestampIsOlderThanTwoMinutes(LAST_MOVEMENT)):
-                logging.info('set status close')
+                logging.debug("TimeStamp older than two minutes")
                 GPIO.output(RED_PIN,GPIO.HIGH)
                 GPIO.output(GREEN_PIN, GPIO.LOW)
                 GPIO.output(YELLOW_PIN, GPIO.LOW)
